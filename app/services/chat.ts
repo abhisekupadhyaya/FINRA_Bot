@@ -1,4 +1,5 @@
 import { streamLLaMa, staticLLaMa } from './intelligence/ollama'
+
 export interface ChatMessage {
     role: string;
     content: string;

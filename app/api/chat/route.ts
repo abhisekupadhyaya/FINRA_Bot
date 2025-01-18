@@ -1,8 +1,9 @@
 // chatbot/app/api/chat/route.ts
-import { getChatStream } from '@/app/services/chat';
+//import { getChatStream } from '@/app/services/chat';
 import { handleStream } from '@/app/utils/streamHandler';
 import { SSE_HEADERS } from '@/app/constants/headers';
-import { verifyResponse } from '@/app/services/verification';
+//import { verifyResponse } from '@/app/services/verification';
+import { processQuestion } from '@/app/services/agents/reasoningEngine';
 
 export const runtime = 'edge';
 
@@ -17,15 +18,17 @@ export async function POST(req: Request) {
   }
 
   const lastElement = messages[messages.length - 1];
-  const response = await getChatStream(messages);
+  const response = await processQuestion(lastElement.content);
   
-  const verificationResult = await verifyResponse(lastElement, response.clone());
-  if (!verificationResult.isValid) {
-    return new Response(JSON.stringify({ error: verificationResult.error }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
+  //const verificationResult = await verifyResponse(lastElement, response.clone());
+  //if (!verificationResult.isValid) {
+  //  return new Response(JSON.stringify({ error: verificationResult.error }), {
+  //    status: 400,
+  //    headers: { 'Content-Type': 'application/json' }
+  //  });
+  //}
+
+  //console.log(processQuestion(lastElement.content));
 
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
